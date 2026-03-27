@@ -4,15 +4,15 @@ import subprocess
 import os
 
 # --- Configurações ---
-BASE_BACKUP = Path("/media/usuario/803f8a48-f9a9-47a1-a335-1dd49c164a46/BACKUP SAMBA")
+BASE_BACKUP = Path("/caminho/do/backup/BACKUP_SAMBA")
 LOG = BASE_BACKUP / "backup.log"
 
 PONTOS_DE_MONTAGEM = {
-    "/mnt/publico": "//10.200.192.230/publico",
-    "/mnt/departamentos": "//10.200.192.230/departamentos"
+    "/mnt/publico": "//IP_DO_SERVIDOR/publico",
+    "/mnt/departamentos": "//IP_DO_SERVIDOR/departamentos"
 }
 
-CREDENTIALS = "/root/.smbcredentials"
+CREDENTIALS = "/caminho/seguro/.smbcredentials"
 
 DATA = datetime.now().strftime("%Y-%m-%d")
 
