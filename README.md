@@ -1,51 +1,161 @@
-# Automação de Backup de Compartilhamentos Samba com Python
+# 🔄 Automação de Backup de Compartilhamentos Samba com Python
 
-Este projeto automatiza o backup de compartilhamentos de rede SMB/CIFS utilizando Python e snapshots incrementais com rsync.
+Este projeto automatiza o backup de compartilhamentos de rede SMB/CIFS utilizando Python, com suporte a:
 
-O script monta automaticamente os compartilhamentos Samba, executa backups incrementais e mantém um histórico de snapshots utilizando hardlinks para otimizar o uso de espaço em disco.
+* 📦 Backup completo (semanal)
+* ⚡ Backup incremental (diário)
+* 🗂️ Snapshots eficientes com hardlinks (rsync)
 
-## Funcionalidades
+---
 
-- Montagem automática de compartilhamentos SMB
-- Backups incrementais utilizando rsync
-- Snapshots eficientes utilizando hardlinks
-- Registro de logs das operações de backup
-- Compatível com ambientes Linux
+## 📌 Visão Geral
 
-## Requisitos
+O sistema realiza:
+
+1. Montagem automática de compartilhamentos Samba (SMB/CIFS)
+2. Execução de backups utilizando `rsync`
+3. Organização em snapshots por data
+4. Otimização de espaço com hardlinks (`--link-dest`)
+5. Registro detalhado de logs
+
+---
+
+## 🚀 Funcionalidades
+
+### 🔹 Backup Completo (Full)
+
+* Executado semanalmente
+* Cópia integral dos dados
+* Base para os incrementais
+
+### 🔹 Backup Incremental
+
+* Executado diariamente
+* Copia apenas arquivos modificados no dia
+* Utiliza `--files-from` + `--link-dest`
+* Mantém histórico de versões por data
+
+### 🔹 Outras Features
+
+* Montagem automática de compartilhamentos SMB
+* Logs persistentes das execuções
+* Estrutura otimizada para recuperação de dados
+* Compatível com ambientes Linux
+
+---
+
+## 🧰 Tecnologias Utilizadas
+
+* Python 3
+* rsync
+* CIFS/SMB (cifs-utils)
+* Linux (cron para automação)
+
+---
+
+## 📂 Estrutura do Projeto
+
+```bash
+backup/
+├── backup_semanal.py        # Script de backup completo
+├── backup_incremental.py    # Script de backup incremental
+├── logs/
+└── snapshots/
+    ├── publico/
+    └── departamentos/
+```
+
+---
+
+## ⚙️ Requisitos
 
 Sistema Linux com os seguintes pacotes instalados:
 
-- Python 3
-- rsync
-- cifs-utils
+* Python 3
+* rsync
+* cifs-utils
 
-Instalação das dependências:
+### Instalação:
 
 ```bash
+sudo apt update
 sudo apt install rsync cifs-utils
 ```
 
-## Automação e Agendamento
+---
 
-Este script pode ser agendado para executar automaticamente em dias e horários específicos de acordo com a necessidade do ambiente.
+## 🔄 Funcionamento do Backup Incremental
 
-Em sistemas Linux, isso pode ser feito utilizando o **cron**, permitindo a execução periódica do backup sem intervenção manual.
+O script incremental executa o seguinte fluxo:
 
-Exemplo de agendamento semanal:
+1. Monta os compartilhamentos SMB automaticamente
+2. Identifica arquivos modificados no dia atual
+3. Gera uma lista de arquivos modificados
+4. Executa o `rsync` com:
 
-0 2 * * 0 python3 /caminho/do/script/backup_samba.py
+   * `--files-from`
+   * `--link-dest` (referência ao último backup)
+5. Cria snapshot com data (YYYY-MM-DD)
+6. Atualiza o symlink `latest`
 
-Nesse exemplo, o backup será executado todo **domingo às 02:00 da manhã**.
+---
 
-Outros exemplos de agendamento:
+## ⏱️ Automação e Agendamento
 
-Executar todos os dias às 01:00:
+O projeto pode ser automatizado via `cron`.
 
-0 1 * * * python3 /caminho/do/script/backup_samba.py
+### 📅 Backup Incremental Diário (recomendado)
 
-Executar toda segunda-feira às 03:00:
+```bash
+0 1 * * * python3 /caminho/do/script/backup_incremental.py
+```
 
-0 3 * * 1 python3 /caminho/do/script/backup_samba.py
+Executa todos os dias às 01:00.
 
+---
 
+### 📦 Backup Completo Semanal
+
+```bash
+0 2 * * 0 python3 /caminho/do/script/backup_semanal.py
+```
+
+Executa todo domingo às 02:00.
+
+---
+
+### 🧠 Estratégia Recomendada
+
+* Incremental diário → reduz perda de dados
+* Full semanal → garante consistência completa
+
+---
+
+## 📈 Vantagens
+
+* Redução de uso de armazenamento
+* Backups mais frequentes
+* Recuperação granular por data
+* Baixo impacto na rede
+* Estrutura escalável
+
+---
+
+## 🔮 Melhorias Futuras
+
+* Integração com monitoramento (Zabbix)
+* Alertas via Telegram
+* Dashboard web de backups
+* Política de retenção automática (limpeza de snapshots antigos)
+
+---
+
+## 🤝 Contribuição
+
+Sugestões, melhorias e novas features são bem-vindas.
+
+---
+
+## 📌 Observação
+
+Este projeto foi desenvolvido com foco em ambientes corporativos que utilizam compartilhamentos SMB, visando automação, confiabilidade e eficiência no processo de backup.
