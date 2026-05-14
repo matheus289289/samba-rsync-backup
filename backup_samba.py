@@ -4,12 +4,12 @@ import subprocess
 import os
 
 # --- Configurações ---
-BASE_BACKUP = Path("/backup/samba")
+BASE_BACKUP = Path("/caminho-do-backup") #-- caminho onde será salvo o seu backup --*
 LOG = BASE_BACKUP / "backup.log"
 
 PONTOS_DE_MONTAGEM = {
-    "/mnt/share_public": "//fileserver.local/public",
-    "/mnt/share_departments": "//fileserver.local/departments"
+    "/mnt/share_public": "//fileserver.local/public",  #--montar as pastas para copiar
+    "/mnt/share_departments": "//fileserver.local/departments" 
 }
 
 CREDENTIALS = "/root/.smbcredentials"
